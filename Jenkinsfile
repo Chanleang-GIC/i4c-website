@@ -21,6 +21,13 @@ pipeline {
                 sh 'php artisan test'
             }
         }
+        stage('Email Notification') {
+            steps {
+                emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
+                         subject: 'Jenkins Build Failure',
+                         to: 'chanleang7779@gmail.com'
+            }
+        }
     }
     
     post {
