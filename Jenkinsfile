@@ -11,32 +11,29 @@ pipeline {
         stage('Build using Tools') {
             steps {
                 echo 'Compiling code...'
-                sh 'composer install & cp .env.example .env & php artisan key:generate & npm i'
+                sh 'cp .env.example .env'
+                sh 'composer install && php artisan key:generate && npm install && npm run build'
             }
         }
         stage('Test the app') {
             steps {
                 echo 'Testing unit tests...'
                 echo 'Testing features...'
-                sh 'php artisan test'
-            }
-        }
-        stage('Email Notification') {
-            steps {
-                emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
-                         subject: 'Jenkins Build Failure',
-                         to: 'chanleang7779@gmail.com'
+                sh 'php artisan test1'
             }
         }
     }
-    
     post {
+        
         failure {
-            echo 'Sending email notification from Jenkins'
+            echo 'sending email notification from jenkins'
+            
+            step([$class: 'Mailer',
+      notifyEveryUnstableBuild: true,
+      recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                      [$class: 'RequesterRecipientProvider']])])
 
-            emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
-                subject: 'Jenkins Build Failure',
-                to: 'chanleang7779@gmail.com'
-        }
+            
+       }
     }
 }
