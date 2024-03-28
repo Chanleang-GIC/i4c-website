@@ -22,10 +22,7 @@ pipeline {
                 sh 'php artisan test'
             }
         }
-        stage('Email Notification'){
-                mail bcc: '', body: '''Hi, Welcome to Jenkins Alert
-                The build is failure.''', cc: '', from: '', replyTo: '', subject: 'Jenkins job', to: 'chanleang7779@gmail.com'
-        }
+
     }
     post {
         
