@@ -21,22 +21,22 @@ pipeline {
                 sh 'php artisan test'
             }
         }
-        stage('Email Notification') {
-            steps {
-                emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
-                         subject: 'Jenkins Build Failure',
-                         to: 'chanleang7779@gmail.com'
-            }
+        stage('Email Notification'){
+                mail bcc: '', body: '''Hi, Welcome to Jenkins Alert
+                The build is failure.''', cc: '', from: '', replyTo: '', subject: 'Jenkins job', to: 'chanleang7779@gmail.com'
         }
     }
-    
     post {
+        
         failure {
-            echo 'Sending email notification from Jenkins'
+            echo 'sending email notification from jenkins'
+            
+            step([$class: 'Mailer',
+      notifyEveryUnstableBuild: true,
+      recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                      [$class: 'RequesterRecipientProvider']])])
 
-            emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
-                subject: 'Jenkins Build Failure',
-                to: 'chanleang7779@gmail.com'
-        }
+            
+       }
     }
 }
