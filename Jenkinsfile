@@ -11,8 +11,7 @@ pipeline {
         stage('Build using Tools') {
             steps {
                 echo 'Compiling code...'
-                sh 'cp .env.example .env'
-                sh 'composer install && php artisan key:generate && npm install && npm run build'
+                sh 'composer install & cp .env.example .env & php artisan key:generate & npm i'
             }
         }
         stage('Test the app') {
