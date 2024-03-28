@@ -11,8 +11,7 @@ pipeline {
         stage('Build using Tools') {
             steps {
                 echo 'Compiling code...'
-                sh 'cp .env.example .env'
-                sh 'composer install && php artisan key:generate && npm install && npm run build'
+                sh 'composer install & cp .env.example .env & php artisan key:generate & npm i'
             }
         }
         stage('Test the app') {
@@ -22,19 +21,15 @@ pipeline {
                 sh 'php artisan test'
             }
         }
-
     }
+    
     post {
-        
         failure {
-            echo 'sending email notification from jenkins'
-            
-            step([$class: 'Mailer',
-      notifyEveryUnstableBuild: true,
-      recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
-                                      [$class: 'RequesterRecipientProvider']])])
+            echo 'Sending email notification from Jenkins'
 
-            
-       }
+            emailext body: 'Hi, Welcome to Jenkins Alert. The build has failed.',
+                subject: 'Jenkins Build Failure',
+                to: 'chanleang7779@gmail.com'
+        }
     }
 }
